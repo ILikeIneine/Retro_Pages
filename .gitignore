@@ -1,0 +1,6 @@
+# mkdocs
+site/
+
+# MacOS Folder Info
+.DS_Store
+
