@@ -1,3 +1,30 @@
-site_name: My Docs
+site_name: Retro Sites
+nav:
+  - BLOGS:
+    - Blogs/index.md
+    - Back To Basics:
+      - Blogs/Basics/index.md
+      - Blogs/Basics/How c++ Resolves a Funciton Call.md
+      - Blogs/Basics/The Two's Componet.md
+      - Blogs/Basics/Value Catagorys.md
+    - Chromium:
+      - Blogs/Chromium/index.md
+      - Blogs/Chromium/Chromium's CHECK macro.md
+      - Blogs/Chromium/Chromium's MessagePump.md
+      - Blogs/Chromium/Chromium's SequenceManager.md
+      - Blogs/Chromium/Chromium's TaskPosting.md
+    - Network:
+      - Blogs/Network/index.md
+      - Blogs/Network/ip_datagram.md
+      - Blogs/Network/tcp.md
+  - RETRO GAMES:
+      - RetroGames/index.md
+      - What's Out: RetroGames/Games/whatout/index.md
 theme:
   name: material
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tabs
+    - navigation.indexes
+    - navigation.expand

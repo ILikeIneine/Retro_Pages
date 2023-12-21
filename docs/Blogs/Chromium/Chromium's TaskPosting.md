@@ -1,6 +1,5 @@
 # Chromium's Task Posting
 
-
 为了将任务投递到主线程（UI）线程或者 IO 线程，使用`content::GetUIThreadTaskTunner({})` 或者`content::GetIOThreadTaskRunner({})`。你也可以提供额外的`BrowserTaskTraits`作为参数（这并不常见并且通常有特殊含义）
 
 我们以通常用法`content::GetUIThreadTaskRunner({})->PostTask(FROM_HERE, ...)`为例。

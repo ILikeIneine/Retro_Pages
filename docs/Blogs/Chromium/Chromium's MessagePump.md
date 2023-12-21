@@ -131,7 +131,7 @@ override 了`DoWork`。
 
 - [SequenceManager](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/base/task/sequence_manager/README.md)
 
-  有关SequenceManager可以结合[有关分析](./Chromium's%20Sequence%20Manager.md)。
+  有关SequenceManager可以结合[有关分析](./Chromium's%20SequenceManager.md)。
 
   `SequenceManager`的`MainThreadOnly`中有一个结构[`WakeUpQueue`](https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/wake_up_queue.h;l=109;)，而`WakeUpQueue`通过一个最小堆`IntrusiveHeap<ScheduledWakeUp, std::greater<>>`来保存多个`ScheduledWakeUp`，这确保delay时间最短的在最上面。
 
@@ -301,4 +301,4 @@ void WakeUpQueue::MoveReadyDelayedTasksToWorkQueues(
 
 `MessagePumpForIO` 是windows下IO线程的 message pump 的具体实例。
 
-任务投递的逻辑就放到[下一篇](./Chromium's%20Task%20Posting.md)。
+任务投递的逻辑就放到[下一篇](./Chromium's%20TaskPosting.md)。
