@@ -25,6 +25,7 @@ nav:
 theme:
   logo: Logos/logo.gif
   name: material
+  favicon: Logos/pikachu.gif
   icon:
     edit: material/pencil
     view: material/eye
@@ -84,7 +85,7 @@ plugins:
     # insider已经支持中文的分词搜索了 https://squidfunk.github.io/mkdocs-material/blog/2022/chinese-search-support/
       lang:
         - en
-        - ch
+        - zh
   - tags # 给单篇文章添加标签 https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/?h=tags
 markdown_extensions:
   - pymdownx.arithmatex: # 数学公式支持
