@@ -1,4 +1,4 @@
-site_name: Retro Sites
+site_name: 九份的咖啡店☕️
 nav:
   - BLOGS:
     - Blogs/index.md
@@ -17,14 +17,87 @@ nav:
       - Blogs/Network/index.md
       - Blogs/Network/ip_datagram.md
       - Blogs/Network/tcp.md
-  - RETRO GAMES:
-      - RetroGames/index.md
-      - What's Out: RetroGames/Games/whatout/index.md
+  - PICO-8:
+    - Pico-8/index.md
+    - What's Out: Pico-8/Games/whatout/index.md
+  - READING:
+    - Books/index.md
 theme:
+  logo: Logos/logo.gif
   name: material
+  icon:
+    edit: material/pencil
+    view: material/eye
+    repo: fontawesome/brands/github
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: orange
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: lime
+      accent: deep orange
+      toggle:
+        icon: material/lightbulb
+        name: Switch to light mode
   features:
+    - content.tooltips
+    - navigation.top
     - navigation.instant
+    - navigation.instant.progress
     - navigation.instant.prefetch
     - navigation.tabs
     - navigation.indexes
-    - navigation.expand
+    - search.suggest # 搜索输入一些字母时推荐补全整个单词
+    - search.highlight # 搜索出的文章关键词加入高亮
+    - content.code.copy # 可以通过按钮复制代码
+    - content.action.edit # 点击按钮跳转到编辑页面  需要结合 edit_uri 一起使用
+    - content.action.view # 点击按钮跳转到编辑页面  需要结合 edit_uri 一起使用
+    - header.autohide
+edit_uri: edit/master/docs # 编辑按钮跳转的链接
+# [top-right corner]
+repo_url: https://github.com/ILikeIneine/Retro_Site # 右上角点击跳转的链接
+repo_name: github.io # 右上角的名字
+# [bottom-left corner]
+copyright: All Wrongs Served. # 左下角的版权声明
+# [bottom-right corner]
+extra:
+  social: # icons
+    - icon: fontawesome/brands/bilibili
+      link: https://space.bilibili.com/11770315
+      name: Bilibili # 鼠标悬浮提示
+    - icon: fontawesome/brands/github
+      link: https://github.com/ILikeIneine
+      name: GitHub
+  version:
+    provider: mike
+
+# [Extensions]
+plugins:
+  - search: # 现在还不支持中文搜索 支持之后可以设置语言
+    # insider已经支持中文的分词搜索了 https://squidfunk.github.io/mkdocs-material/blog/2022/chinese-search-support/
+      lang:
+        - en
+        - ch
+  - tags # 给单篇文章添加标签 https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/?h=tags
+markdown_extensions:
+  - pymdownx.arithmatex: # 数学公式支持
+      generic: true
+  - attr_list # 给图片后面添加{width="300"}设置大小
+  - toc:
+      permalink: true # 固定标题位置为当前位置
+  # - pymdownx.highlight: # 代码块高亮
+      # linenums: true # 显示行号
+      # auto_title: true # 显示编程语言名称
+  - pymdownx.superfences # 代码块高亮插件
+  - admonition # https://squidfunk.github.io/mkdocs-material/reference/admonitions/#inline-blocks
+  - pymdownx.details # admonition需要
+
+extra_css:
+  - stylesheets/extra.css
