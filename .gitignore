@@ -4,3 +4,5 @@ site/
 # MacOS Folder Info
 .DS_Store
 
+# python virtual env
+.venv/
