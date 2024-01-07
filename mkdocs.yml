@@ -1,26 +1,30 @@
 site_name: 九份的咖啡店☕️
 nav:
-  - BLOGS:
+  - Blogs:
     - Blogs/index.md
     - Back To Basics:
-      - Blogs/Basics/index.md
       - Blogs/Basics/How c++ Resolves a Funciton Call.md
       - Blogs/Basics/The Two's Componet.md
       - Blogs/Basics/Value Catagorys.md
     - Chromium:
-      - Blogs/Chromium/index.md
       - Blogs/Chromium/Chromium's CHECK macro.md
       - Blogs/Chromium/Chromium's MessagePump.md
       - Blogs/Chromium/Chromium's SequenceManager.md
       - Blogs/Chromium/Chromium's TaskPosting.md
     - Network:
-      - Blogs/Network/index.md
       - Blogs/Network/ip_datagram.md
       - Blogs/Network/tcp.md
-  - PICO-8:
+    - 乱七八糟的:
+      - Clang-Tidy:
+        - Blogs/Others/A Way For Static Analyzing.md
+        - Blogs/Others/Clang-Tidy.md
+  - Tutorials:
+    - Tutorials/clang-tidy tutorial.md
+    - Tutorials/Chromium Tutorial.md
+  - Pico-8:
     - Pico-8/index.md
     - What's Out: Pico-8/Games/whatout/index.md
-  - READING:
+  - Reading:
     - Books/index.md
 theme:
   logo: Logos/logo.gif
