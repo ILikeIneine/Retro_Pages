@@ -14,10 +14,11 @@ nav:
     - Network:
       - Blogs/Network/ip_datagram.md
       - Blogs/Network/tcp.md
-    - 乱七八糟的:
+    - Others:
       - Clang-Tidy:
         - Blogs/Others/A Way For Static Analyzing.md
         - Blogs/Others/Clang-Tidy.md
+      - Blogs/Others/Fix ArkOS Not Booted (Black Screen) On RGB30.md
   - Tutorials:
     - Tutorials/clang-tidy tutorial.md
     - Tutorials/Chromium Tutorial.md
