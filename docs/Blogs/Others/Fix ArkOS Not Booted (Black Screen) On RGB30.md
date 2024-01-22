@@ -1,3 +1,7 @@
+---
+comments: true
+---
+
 # ArkOS Failed On PowKiddy RGB30
 
 I've got a PowKiddy RGB30 recently and trying to install ArkOS for better performance on PSX. 

@@ -18,9 +18,7 @@ nav:
       - Clang-Tidy:
         - Blogs/Others/A Way For Static Analyzing.md
         - Blogs/Others/Clang-Tidy.md
-      - Fix ArkOS Not Booted (Black Screen) On RGB30:
-      comment: true
-        - Blogs/Others/Fix ArkOS Not Booted (Black Screen) On RGB30.md
+      - Fix ArkOS Not Booted (Black Screen) On RGB30: Blogs/Others/Fix ArkOS Not Booted (Black Screen) On RGB30.md
   - Tutorials:
     - Tutorials/clang-tidy tutorial.md
     - Tutorials/Chromium Tutorial.md
@@ -86,6 +84,7 @@ extra:
       name: GitHub
   version:
     provider: mike
+  comments: true
 
 # [Extensions]
 plugins:
@@ -96,6 +95,7 @@ plugins:
         - zh
   - tags # 给单篇文章添加标签 https://squidfunk.github.io/mkdocs-material/setup/setting-up-tags/?h=tags
 markdown_extensions:
+  - meta
   - pymdownx.arithmatex: # 数学公式支持
       generic: true
   - attr_list # 给图片后面添加{width="300"}设置大小
