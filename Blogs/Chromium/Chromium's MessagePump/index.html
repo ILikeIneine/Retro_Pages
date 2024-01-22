@@ -1,0 +1,1841 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../Chromium%27s%20CHECK%20macro/">
+      
+      
+        <link rel="next" href="../Chromium%27s%20SequenceManager/">
+      
+      
+      <link rel="icon" href="../../../Logos/pikachu.gif">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
+    
+    
+      
+        <title>Chromium's MessagePump - 九份的咖啡店☕️</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chromiums-messagepump" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="九份的咖啡店☕️" class="md-header__button md-logo" aria-label="九份的咖啡店☕️" data-md-component="logo">
+      
+  <img src="../../../Logos/logo.gif" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            九份的咖啡店☕️
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chromium's MessagePump
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="lime" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ILikeIneine/Retro_Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    github.io
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+    
+  
+  Blogs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Tutorials/clang-tidy%20tutorial/" class="md-tabs__link">
+          
+  
+    
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Pico-8/" class="md-tabs__link">
+          
+  
+    
+  
+  Pico-8
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Books/" class="md-tabs__link">
+          
+  
+    
+  
+  Reading
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="九份的咖啡店☕️" class="md-nav__button md-logo" aria-label="九份的咖啡店☕️" data-md-component="logo">
+      
+  <img src="../../../Logos/logo.gif" alt="logo">
+
+    </a>
+    九份的咖啡店☕️
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ILikeIneine/Retro_Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    github.io
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Blogs
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blogs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Back To Basics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Back To Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basics/How%20c%2B%2B%20Resolves%20a%20Funciton%20Call/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    How C++ Resolves A Function Call
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basics/The%20Two%27s%20Componet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Two's Complement
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Basics/Value%20Catagorys/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lvalues and Rvalues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Chromium
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Chromium
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chromium%27s%20CHECK%20macro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium 中的 CHECK 宏
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Chromium's MessagePump
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Chromium's MessagePump
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message_pumph" class="md-nav__link">
+    <span class="md-ellipsis">
+      message_pump.h
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message_pump_winh" class="md-nav__link">
+    <span class="md-ellipsis">
+      message_pump_win.h
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="message_pump_win.h">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#messagepumpforui" class="md-nav__link">
+    <span class="md-ellipsis">
+      MessagePumpForUI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MessagePumpForUI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#processnextwindowsmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      ProcessNextWindowsMessage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dowork" class="md-nav__link">
+    <span class="md-ellipsis">
+      DoWork
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doworkimpl" class="md-nav__link">
+    <span class="md-ellipsis">
+      DoWorkImpl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DoWorkImpl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1selectnexttask" class="md-nav__link">
+    <span class="md-ellipsis">
+      过程【1】：SelectNextTask
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2task_annotator_runtask" class="md-nav__link">
+    <span class="md-ellipsis">
+      过程【2】：task_annotator_.RunTask
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3getpendingwakeup" class="md-nav__link">
+    <span class="md-ellipsis">
+      过程【3】：GetPendingWakeUp()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#messagepumpforio" class="md-nav__link">
+    <span class="md-ellipsis">
+      MessagePumpForIO
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chromium%27s%20SequenceManager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sequence Manager
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Chromium%27s%20TaskPosting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium's Task Posting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Network
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            Network
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Network/ip_datagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ip datagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Network/tcp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TCP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5" id="__nav_1_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Others
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            Others
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_1" id="__nav_1_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Clang-Tidy
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            Clang-Tidy
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Others/A%20Way%20For%20Static%20Analyzing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClangTidy代码静态检测
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Others/Clang-Tidy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nesessary Checks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Others/Fix%20ArkOS%20Not%20Booted%20%28Black%20Screen%29%20On%20RGB30/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fix ArkOS Not Booted (Black Screen) On RGB30
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Tutorials/clang-tidy%20tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Clang Tidy Tutorial
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Tutorials/Chromium%20Tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium Compile Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../Pico-8/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Pico-8
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Pico-8
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Pico-8/Games/whatout/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    What's Out
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../Books/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Reading
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reading
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    <span class="md-ellipsis">
+      Background
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message_pumph" class="md-nav__link">
+    <span class="md-ellipsis">
+      message_pump.h
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message_pump_winh" class="md-nav__link">
+    <span class="md-ellipsis">
+      message_pump_win.h
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="message_pump_win.h">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#messagepumpforui" class="md-nav__link">
+    <span class="md-ellipsis">
+      MessagePumpForUI
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MessagePumpForUI">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#processnextwindowsmessage" class="md-nav__link">
+    <span class="md-ellipsis">
+      ProcessNextWindowsMessage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dowork" class="md-nav__link">
+    <span class="md-ellipsis">
+      DoWork
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#doworkimpl" class="md-nav__link">
+    <span class="md-ellipsis">
+      DoWorkImpl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DoWorkImpl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1selectnexttask" class="md-nav__link">
+    <span class="md-ellipsis">
+      过程【1】：SelectNextTask
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2task_annotator_runtask" class="md-nav__link">
+    <span class="md-ellipsis">
+      过程【2】：task_annotator_.RunTask
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3getpendingwakeup" class="md-nav__link">
+    <span class="md-ellipsis">
+      过程【3】：GetPendingWakeUp()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#messagepumpforio" class="md-nav__link">
+    <span class="md-ellipsis">
+      MessagePumpForIO
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/ILikeIneine/Retro_Site/edit/master/docs/Blogs/Chromium/Chromium's MessagePump.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/ILikeIneine/Retro_Site/raw/master/docs/Blogs/Chromium/Chromium's MessagePump.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/></svg>
+    </a>
+  
+
+
+<h1 id="chromiums-messagepump">Chromium's MessagePump<a class="headerlink" href="#chromiums-messagepump" title="Permanent link">&para;</a></h1>
+<p>在<a href="https://groups.google.com/a/chromium.org/g/chromium-dev/c/Alycg9BUDEM">讨论</a>上看到这样一个解释:</p>
+<blockquote>
+<p>MessageLoop is a task runner. It keeps a queue of Tasks, but it may also have other messages (platform-specific UI events, or platform-specific IO events) that it handles. Those platform specific messages are handled by the MessagePumps. Therefore, MessageLoop depends on MessagePumps.</p>
+</blockquote>
+<p>MessageLoop是一个<code>task runner</code>，保存了一个各种任务的队列，（基于平台的 UI events 或者基于平台的 IO events）。这些基于平台的消息是由MessagePumps管理的。因此<code>MessageLoop</code>依赖于<code>MessagePumps</code>。</p>
+<p>由于这个回答的时间为2011年，考虑到时效性，不具有多大参考价值。</p>
+<p>刚接触到这一块，我也不太明白其中的复杂的逻辑。所以这篇可能仅仅是一个繁琐注释的翻译解析（并且不那么准确）</p>
+<h2 id="background">Background<a class="headerlink" href="#background" title="Permanent link">&para;</a></h2>
+<p>每个<code>base::Thread</code>（除了主线程），在创建的时候都会拥有一个<code>MessageLoop</code>。每个进程至少有两个线程。</p>
+<p>一个主线程，在浏览器进程中为<code>UI thread</code>，在<code>Blink</code>渲染进程中为<code>Blink main thread</code>，</p>
+<p>和一个<code>IO thread</code>。</p>
+<p>还会有根据其他需求创建的一些特殊用途的线程或者<em>线程池</em>。</p>
+<p>大多数线程有一个<code>loop</code>，这个循环从队列中获取<code>tasks</code>然后执行。</p>
+<p>TODO: add more explainations</p>
+<h2 id="message_pumph"><a href="https://source.chromium.org/chromium/chromium/src/+/main:base/message_loop/message_pump.h">message_pump.h</a><a class="headerlink" href="#message_pumph" title="Permanent link">&para;</a></h2>
+<p>Data: 2023/11/6</p>
+<p><code>MessagePump</code>的基类，inner class 有</p>
+<ul>
+<li><code>MessagePump::Delegate</code></li>
+<li><code>MessagePump::ScopedDoworkItem</code>。</li>
+</ul>
+<p>不知到谷狗为什么喜欢搞这么多inner class，基本每个坨坨里都要塞点。</p>
+<p>先看<code>MessagePump</code>，主要有四种<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/message_loop/message_pump_type.h;drc=4a0d413ada84db50379ab8f35ec2630cd16c800b;l=15"><code>MessagePumpType</code>(click to view)</a>:</p>
+<ul>
+<li>
+<p><em>DEFAULT</em></p>
+<p>This type of pump only supports tasks and timers.</p>
+</li>
+<li>
+<p><em>UI</em></p>
+<p>This type of pump also supports native UI events (e.g Windows messages).</p>
+</li>
+<li>
+<p><em>CUSTOM</em></p>
+<p>User provided implementation of MessagePump interface.</p>
+</li>
+<li>
+<p><em>IO</em></p>
+<p>This type of pump also supports asynchronous IO.</p>
+</li>
+</ul>
+<p>并且提供了<code>Create</code>静态<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/message_loop/message_pump.h;l=37">Factory Implementation</a>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Creates the default MessagePump based on |type|. Caller owns return value.</span>
+<span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">MessagePump</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Create</span><span class="p">(</span><span class="n">MessagePumpType</span><span class="w"> </span><span class="n">type</span><span class="p">);</span>
+</code></pre></div>
+<p>根据<code>type</code>创建对应的<code>MessagePump</code>。</p>
+<h2 id="message_pump_winh"><a href="https://source.chromium.org/chromium/chromium/src/+/main:base/message_loop/message_pump_win.h">message_pump_win.h</a><a class="headerlink" href="#message_pump_winh" title="Permanent link">&para;</a></h2>
+<p>由于开发环境是Wendous，这里讲的是<code>MessagePump</code>在wendows下面的头文件。</p>
+<p><code>MEssagePumpWin</code>是继承自<code>MessagePump</code>的，作为windows下<code>MessagePump</code>的基础。</p>
+<p>有一个inner class<code>RunState</code>记录了MessagePump的状态。</p>
+<h3 id="messagepumpforui">MessagePumpForUI<a class="headerlink" href="#messagepumpforui" title="Permanent link">&para;</a></h3>
+<p><code>MessagePumpForUI</code> 是windows下UI线程的 message pump 的具体实例。
+不过messagepump会在初始化的时候，create一个message windows，接受windows的系统窗口消息。</p>
+<p><code>DoRunLoop</code>里是处理消息的死循环，主要是：</p>
+<ol>
+<li>ProcessNextWindowsMessage()</li>
+<li>delegate-&gt;DoWork()</li>
+<li>delegate-&gt;DoIdleWork()</li>
+<li>WaitForWork(next_work_info)</li>
+</ol>
+<p>这里的逻辑大概就是，如果有可以执行的任务，就执行它并获取下一次任务的时间（NextTaskInfo），设置下一次任务的时间。当所有需要立即执行（immediate task）的任务执行完毕后（即获取到的下一次任务的属性<em>is not immediate</em>），开始执行idle任务。</p>
+<p>idle任务全部执行完，并且没有更多的任务，就等待（WaitForWork）。然后重复上面的过程。</p>
+<h4 id="processnextwindowsmessage">ProcessNextWindowsMessage<a class="headerlink" href="#processnextwindowsmessage" title="Permanent link">&para;</a></h4>
+<p>具体地，先处理windows的消息，peekmessage，translate message然后dispatch messasge之类的，过程中顺带通知观察者，这些设计里观察者确实蛮多的，有些操作需要被及时观测到以做出对应的处理，chromium的blogs里面有讲到这一部分。</p>
+<h4 id="dowork">DoWork<a class="headerlink" href="#dowork" title="Permanent link">&para;</a></h4>
+<p>然后DoWork，这里的delegate是一个thread_local变量， 在这里<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/thread_controller_with_message_pump_impl.h;drc=7fa0c25da15ae39bbd2fd720832ec4df4fee705a;l=108?q=main_thread_only&amp;ss=chromium%2Fchromium%2Fsrc">ThreadControllerWithMessagePumpImpl</a>
+override 了<code>DoWork</code>。</p>
+<p><code>DoWork</code>通过<code>DoWorkImpl</code>获取下一次任务唤醒的信息。如果获取不到，意味着没有更多任务了。设置下一次唤醒时间为TimeTicks::Max()。</p>
+<p>如果获取到的下一次的任务不是immediate，就<code>DoIdleWork</code>。</p>
+<h4 id="doworkimpl">DoWorkImpl<a class="headerlink" href="#doworkimpl" title="Permanent link">&para;</a></h4>
+<p><code>DoWorkImpl</code>大致上是一个循环取任务的过程，条件是：</p>
+<ul>
+<li>指定g_run_tasks_by_batches（批量执行任务flag）</li>
+<li>batch_duration 没有超时（批量执行任务的最大时间）</li>
+<li>work_batch_size 没有到达上限（可批量执行任务数量）</li>
+</ul>
+<p>这个g_run_tasks_by_batches~~我不知道是个什么几把语义~~是允许批量执行任务，大致上，如果以上条件满足，就从<code>main_thread_only</code>里取可以执行的任务然后交给<code>task_annotator_</code>去RunTask，直到循环条件结束，并且批量任务执行完之后，返回下一次的取任务的等待信息给<code>DoWork</code>。</p>
+<p>具体上，循环重复以下三个过程：</p>
+<ol>
+<li>
+<p>通过<code>main_thread_only().task_source-&gt;SelectNextTask()</code>选择一些可以执行的任务进行执行</p>
+</li>
+<li>
+<p>调用 <code>task_annotator_.RunTask()</code> 执行任务</p>
+</li>
+<li>
+<p>最后通过<code>main_thread_only().task_source-&gt;GetPendingWakeUp()</code> 获取下一次要执行的任务。返回给消息循环作为休眠时间的参考。</p>
+</li>
+</ol>
+<p>为了具体地分析以上三个流程，首先需要了解一些概念。</p>
+<ul>
+<li>MainThreadOnly</li>
+</ul>
+<p>MainThreadOnly是一个结构体，存在于很多类中定义为一个inner class。<code>MainThreadOnly</code>中存放的数据一般和当前线程绑定，并且只在当前线程中使用。可以不用加锁访问。</p>
+<ul>
+<li>AnyThread</li>
+</ul>
+<p>与MainThreadOnly语义上相对的是AnyThread。这个结构体可以被其他任意线程访问（需要持锁）。代码中也可以看到，AnyThread是通过编译器指令指定了<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/task_queue_impl.h;l=589;"><code>GUARDED_BY(any_thread_lock)</code></a>互斥锁。</p>
+<ul>
+<li><a href="https://chromium.googlesource.com/chromium/src/+/refs/heads/main/base/task/sequence_manager/README.md">SequenceManager</a></li>
+</ul>
+<p>有关SequenceManager可以结合<a href="../Chromium%27s%20SequenceManager/">有关分析</a>。</p>
+<p><code>SequenceManager</code>的<code>MainThreadOnly</code>中有一个结构<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/wake_up_queue.h;l=109;"><code>WakeUpQueue</code></a>，而<code>WakeUpQueue</code>通过一个最小堆<code>IntrusiveHeap&lt;ScheduledWakeUp, std::greater&lt;&gt;&gt;</code>来保存多个<code>ScheduledWakeUp</code>，这确保delay时间最短的在最上面。</p>
+<pre><code>`ScheduledWakeUp`持有`TaskQueueImpl`对象。`TaskQueueImpl`中的`MainThreadOnly`和`Anythread`对象分别持有：
+</code></pre>
+<ul>
+<li>
+<p><a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/task_queue_impl.h;l=424;">MainThreadOnly::delayed_work_queue</a></p>
+</li>
+<li>
+<p><a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/task_queue_impl.h;l=425;">MainThreadOnly::immediate_work_queue</a></p>
+</li>
+<li>
+<p><a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/task_queue_impl.h;l=426;">MainThreadOnly::delayed_incoming_queue</a></p>
+</li>
+<li>
+<p><a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/task_queue_impl.h;l=575;">Anythread::immediate_incoming_queue</a></p>
+</li>
+</ul>
+<p>也就是说一个<code>SequenceManagerImpl</code>可以管理多个<code>TaskQueueImpl</code>。</p>
+<pre><code>当延迟任务提交后，会进入到`delayed_incoming_queue`，当到达可执行时间后提交到`delayed_work_queue`，然后去执行。立即执行的任务先提交到`immediate_incoming_queue`，然后由目标线程提交到`immediate_work_queue`，再去执行。
+</code></pre>
+<h5 id="1selectnexttask">过程【1】：SelectNextTask<a class="headerlink" href="#1selectnexttask" title="Permanent link">&para;</a></h5>
+<p><code>main_thread_only().task_source-&gt;SelectNextTask()</code>这里的task_resource是被<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/sequence_manager_impl.cc;l=201;">sequence_manager_impl</a>通过SetSequencedTaskSource注入的，所以task_source 为SequenceManagerImpl。</p>
+<div class="highlight"><pre><span></span><code><span class="n">absl</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">SequenceManagerImpl</span><span class="o">::</span><span class="n">SelectedTask</span><span class="o">&gt;</span>
+<span class="n">SequenceManagerImpl</span><span class="o">::</span><span class="n">SelectNextTaskImpl</span><span class="p">(</span><span class="n">LazyNow</span><span class="o">&amp;</span><span class="w"> </span><span class="n">lazy_now</span><span class="p">,</span>
+<span class="w">                                        </span><span class="n">SelectTaskOption</span><span class="w"> </span><span class="n">option</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">//...</span>
+
+<span class="w">  </span><span class="c1">// 当MainThreadOnly-&gt; immediate_work_queue为空时候尝试从AnyThread-&gt;immediate_incoming_queue获取任务</span>
+<span class="w">  </span><span class="n">ReloadEmptyWorkQueues</span><span class="p">();</span>
+<span class="w">  </span><span class="c1">// 把到时间的delayed_incoming_queue的task移到delayed_work_queue</span>
+<span class="w">  </span><span class="n">MoveReadyDelayedTasksToWorkQueues</span><span class="p">(</span><span class="o">&amp;</span><span class="n">lazy_now</span><span class="p">);</span>
+
+<span class="w">  </span><span class="c1">// If we sampled now, check if it&#39;s time to reclaim memory next time we go</span>
+<span class="w">  </span><span class="c1">// idle.</span>
+
+<span class="w">  </span><span class="c1">// ...</span>
+
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="nb">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 选择一个WorkQueue</span>
+<span class="w">    </span><span class="n">internal</span><span class="o">::</span><span class="n">WorkQueue</span><span class="o">*</span><span class="w"> </span><span class="n">work_queue</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">main_thread_only</span><span class="p">().</span><span class="n">selector</span><span class="p">.</span><span class="n">SelectWorkQueueToService</span><span class="p">(</span><span class="n">option</span><span class="p">);</span>
+<span class="w">    </span><span class="n">TRACE_EVENT_OBJECT_SNAPSHOT_WITH_ID</span><span class="p">(</span>
+<span class="w">        </span><span class="n">TRACE_DISABLED_BY_DEFAULT</span><span class="p">(</span><span class="s">&quot;sequence_manager.debug&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;SequenceManager&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">this</span><span class="p">,</span>
+<span class="w">        </span><span class="n">AsValueWithSelectorResultForTracing</span><span class="p">(</span><span class="n">work_queue</span><span class="p">,</span>
+<span class="w">                                            </span><span class="cm">/* force_verbose */</span><span class="w"> </span><span class="nb">false</span><span class="p">));</span>
+
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">work_queue</span><span class="p">)</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">absl</span><span class="o">::</span><span class="n">nullopt</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// If the head task was canceled, remove it and run the selector again.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">UNLIKELY</span><span class="p">(</span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">RemoveAllCanceledTasksFromFront</span><span class="p">()))</span>
+<span class="w">      </span><span class="k">continue</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">UNLIKELY</span><span class="p">(</span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">GetFrontTask</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">nestable</span><span class="w"> </span><span class="o">==</span>
+<span class="w">                     </span><span class="n">Nestable</span><span class="o">::</span><span class="n">kNonNestable</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">                 </span><span class="n">main_thread_only</span><span class="p">().</span><span class="n">nesting_depth</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// Defer non-nestable work. NOTE these tasks can be arbitrarily delayed so</span>
+<span class="w">      </span><span class="c1">// the additional delay should not be a problem.</span>
+<span class="w">      </span><span class="c1">// Note because we don&#39;t delete queues while nested, it&#39;s perfectly OK to</span>
+<span class="w">      </span><span class="c1">// store the raw pointer for |queue| here.</span>
+<span class="w">      </span><span class="n">internal</span><span class="o">::</span><span class="n">TaskQueueImpl</span><span class="o">::</span><span class="n">DeferredNonNestableTask</span><span class="w"> </span><span class="n">deferred_task</span><span class="p">{</span>
+<span class="w">          </span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">TakeTaskFromWorkQueue</span><span class="p">(),</span><span class="w"> </span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">task_queue</span><span class="p">(),</span>
+<span class="w">          </span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">queue_type</span><span class="p">()};</span>
+<span class="w">      </span><span class="n">main_thread_only</span><span class="p">().</span><span class="n">non_nestable_task_queue</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span>
+<span class="w">          </span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">deferred_task</span><span class="p">));</span>
+<span class="w">      </span><span class="k">continue</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="n">main_thread_only</span><span class="p">().</span><span class="n">task_execution_stack</span><span class="p">.</span><span class="n">emplace_back</span><span class="p">(</span>
+<span class="w">        </span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">TakeTaskFromWorkQueue</span><span class="p">(),</span><span class="w"> </span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">task_queue</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">InitializeTaskTiming</span><span class="p">(</span><span class="n">work_queue</span><span class="o">-&gt;</span><span class="n">task_queue</span><span class="p">()));</span>
+
+<span class="w">    </span><span class="n">ExecutingTask</span><span class="o">&amp;</span><span class="w"> </span><span class="n">executing_task</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="o">*</span><span class="n">main_thread_only</span><span class="p">().</span><span class="n">task_execution_stack</span><span class="p">.</span><span class="n">rbegin</span><span class="p">();</span>
+<span class="w">    </span><span class="n">NotifyWillProcessTask</span><span class="p">(</span><span class="o">&amp;</span><span class="n">executing_task</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">lazy_now</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Maybe invalidate the delayed task handle. If already invalidated, then</span>
+<span class="w">    </span><span class="c1">// don&#39;t run this task.</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">executing_task</span><span class="p">.</span><span class="n">pending_task</span><span class="p">.</span><span class="n">WillRunTask</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">executing_task</span><span class="p">.</span><span class="n">pending_task</span><span class="p">.</span><span class="n">task</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DoNothing</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">SelectedTask</span><span class="p">(</span>
+<span class="w">        </span><span class="n">executing_task</span><span class="p">.</span><span class="n">pending_task</span><span class="p">,</span>
+<span class="w">        </span><span class="n">executing_task</span><span class="p">.</span><span class="n">task_queue</span><span class="o">-&gt;</span><span class="n">task_execution_trace_logger</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">executing_task</span><span class="p">.</span><span class="n">priority</span><span class="p">,</span><span class="w"> </span><span class="n">executing_task</span><span class="p">.</span><span class="n">task_queue_name</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h5 id="2task_annotator_runtask">过程【2】：task_annotator_.RunTask<a class="headerlink" href="#2task_annotator_runtask" title="Permanent link">&para;</a></h5>
+<p>取任务大致流程如上，接下来分析annotator运行任务的逻辑。</p>
+<p>具体代码可以看<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/thread_controller_with_message_pump_impl.cc;l=458;">这里</a>，就是tracing 和 run。</p>
+<h5 id="3getpendingwakeup">过程【3】：GetPendingWakeUp()<a class="headerlink" href="#3getpendingwakeup" title="Permanent link">&para;</a></h5>
+<p>最后再来分析<code>task_source-&gt;GetPendingWakeUp()</code>，这里实际上调用的是<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/sequence_manager_impl.cc;"><code>SequenceManagerImpl::GetPendingWakeUp()</code></a>.</p>
+<p>注释写的比较清晰了，跳转逻辑最后调用的是<code>main_thread_only().wake_up_queue-&gt;GetNextDelayedWakeUp()</code>，跳转到<a href="https://source.chromium.org/chromium/chromium/src/+/main:base/task/sequence_manager/wake_up_queue.cc;l=120;">这里</a>，取最小堆顶部的WakeUp，获取下次唤醒时间。</p>
+<p>既然从获取wake_up_queue_的堆顶<code>TaskQueue</code>的唤醒时间，那么这个wake_up_queue_是怎么更新的呢？就是在我们每次取消息的时候，即：</p>
+<p>调用栈：
+<code>SequenceManagerImpl::SelectNextTaskImpl()</code> -&gt; <code>SequenceManagerImpl::MoveReadyDelayedTasksToWorkQueues()</code> -&gt; <code>WakeUpQueue::MoveReadyDelayedTasksToWorkQueues()</code> -&gt; <code>TaskQueueImpl::MoveReadyDelayedTasksToWorkQueue()</code></p>
+<div class="highlight"><pre><span></span><code><span class="kt">void</span><span class="w"> </span><span class="nf">WakeUpQueue::MoveReadyDelayedTasksToWorkQueues</span><span class="p">(</span>
+<span class="w">    </span><span class="n">LazyNow</span><span class="o">*</span><span class="w"> </span><span class="n">lazy_now</span><span class="p">,</span>
+<span class="w">    </span><span class="n">EnqueueOrder</span><span class="w"> </span><span class="n">enqueue_order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">update_needed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+<span class="w">         </span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">wake_up</span><span class="p">.</span><span class="n">earliest_time</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">lazy_now</span><span class="o">-&gt;</span><span class="n">Now</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">internal</span><span class="o">::</span><span class="n">TaskQueueImpl</span><span class="o">*</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">queue</span><span class="p">;</span>
+<span class="w">    </span><span class="c1">// OnWakeUp() is expected to update the next wake-up for this queue with</span>
+<span class="w">    </span><span class="c1">// SetNextWakeUpForQueue(), thus allowing us to make progress.</span>
+<span class="w">    </span><span class="c1">// 这里唤醒队列</span>
+<span class="w">    </span><span class="n">queue</span><span class="o">-&gt;</span><span class="n">OnWakeUp</span><span class="p">(</span><span class="n">lazy_now</span><span class="p">,</span><span class="w"> </span><span class="n">enqueue_order</span><span class="p">);</span>
+<span class="w">    </span><span class="n">update_needed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">update_needed</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="c1">// If any queue was notified, possibly update following queues. This ensures</span>
+<span class="w">  </span><span class="c1">// the wake up is up to date, which is necessary because calling OnWakeUp() on</span>
+<span class="w">  </span><span class="c1">// a throttled queue may affect state that is shared between other related</span>
+<span class="w">  </span><span class="c1">// throttled queues. The wake up for an affected queue might be pushed back</span>
+<span class="w">  </span><span class="c1">// and needs to be updated. This is done lazily only once the related queue</span>
+<span class="w">  </span><span class="c1">// becomes the next one to wake up, since that wake up can&#39;t be moved up.</span>
+<span class="w">  </span><span class="c1">// `wake_up_queue_` is non-empty here, per the condition above.</span>
+<span class="w">  </span><span class="n">internal</span><span class="o">::</span><span class="n">TaskQueueImpl</span><span class="o">*</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">queue</span><span class="p">;</span>
+<span class="w">  </span><span class="n">queue</span><span class="o">-&gt;</span><span class="n">UpdateWakeUp</span><span class="p">(</span><span class="n">lazy_now</span><span class="p">);</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">internal</span><span class="o">::</span><span class="n">TaskQueueImpl</span><span class="o">*</span><span class="w"> </span><span class="n">old_queue</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">std</span><span class="o">::</span><span class="n">exchange</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="w"> </span><span class="n">wake_up_queue_</span><span class="p">.</span><span class="n">top</span><span class="p">().</span><span class="n">queue</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">old_queue</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">queue</span><span class="p">)</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">    </span><span class="n">queue</span><span class="o">-&gt;</span><span class="n">UpdateWakeUp</span><span class="p">(</span><span class="n">lazy_now</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>循环中判断堆顶的任务队列是否已经可以唤醒，可执行的话调用<code>TaskQueueImpl::OnWakeUp()</code>。</p>
+<p>然后是<code>TaskQueueImpl::MoveReadyDelayedTasksToWorkQueue()</code>。</p>
+<blockquote>
+<p>Enqueue all delayed tasks that should be running now, skipping any that have been canceled.</p>
+</blockquote>
+<p>接着在最后调用<code>TaskQueueImpl::UpdateWakeUp()</code>获取下一次唤醒时间并将该时间设置为下一次唤醒时间，在<code>WakeUpQueue::SetNextWakeUpForQueue()</code>里面涉及到调整堆结构。具体，把最新的<code>WakeUp</code>信息添加到<code>wake_up_queue_</code>。</p>
+<p>在以上这些操作之后，这可能导致队列中的信息变乱，需要更新（update_needed）其他的wakeup信息。</p>
+<p>如果更新前后的wake_up时间不一样，会通过<code>DefaultWakeUpQueue::OnNextWakeUpChanged()</code>通知观察者。</p>
+<p>然后通过<code>SequenceManagerImpl::SetNextWakeUp()</code>调整任务调度,判断是否立刻唤醒<code>ThreadControllerWithMessagePumpImpl::ScheduleWork()</code></p>
+<p>或者设置下次唤醒时间<code>ThreadControllerWithMessagePumpImpl::SetNextDelayedDoWork()</code></p>
+<p>以上这些最后都会控制message_pump去执行对应的操作，通过<code>MessagePumpForUI::ScheduleWork()</code>Post一条windows message<code>kMsgHaveWork</code>，告诉有消息来了。</p>
+<h3 id="messagepumpforio">MessagePumpForIO<a class="headerlink" href="#messagepumpforio" title="Permanent link">&para;</a></h3>
+<p><code>MessagePumpForIO</code> 是windows下IO线程的 message pump 的具体实例。</p>
+<p>任务投递的逻辑就放到<a href="../Chromium%27s%20TaskPosting/">下一篇</a>。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      All Wrongs Served.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://space.bilibili.com/11770315" target="_blank" rel="noopener" title="Bilibili" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M488.6 104.1c16.7 18.1 24.4 39.7 23.3 65.7v202.4c-.4 26.4-9.2 48.1-26.5 65.1-17.2 17-39.1 25.9-65.5 26.7H92.02c-26.45-.8-48.21-9.8-65.28-27.2C9.682 419.4.767 396.5 0 368.2V169.8c.767-26 9.682-47.6 26.74-65.7C43.81 87.75 65.57 78.77 92.02 78h29.38L96.05 52.19c-5.75-5.73-8.63-13-8.63-21.79 0-8.8 2.88-16.06 8.63-21.797C101.8 2.868 109.1 0 117.9 0s16.1 2.868 21.9 8.603L213.1 78h88l74.5-69.397C381.7 2.868 389.2 0 398 0c8.8 0 16.1 2.868 21.9 8.603 5.7 5.737 8.6 12.997 8.6 21.797 0 8.79-2.9 16.06-8.6 21.79L394.6 78h29.3c26.4.77 48 9.75 64.7 26.1zm-38.8 69.7c-.4-9.6-3.7-17.4-10.7-23.5-5.2-6.1-14-9.4-22.7-9.8H96.05c-9.59.4-17.45 3.7-23.58 9.8-6.14 6.1-9.4 13.9-9.78 23.5v194.4c0 9.2 3.26 17 9.78 23.5s14.38 9.8 23.58 9.8H416.4c9.2 0 17-3.3 23.3-9.8 6.3-6.5 9.7-14.3 10.1-23.5V173.8zm-264.3 42.7c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2-6.2 6.3-14 9.5-23.6 9.5-9.6 0-17.5-3.2-23.6-9.5-6.1-6.3-9.4-14-9.8-23.2v-33.3c.4-9.1 3.8-16.9 10.1-23.2 6.3-6.3 13.2-9.6 23.3-10 9.2.4 17 3.7 23.3 10zm191.5 0c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2-6.1 6.3-14 9.5-23.6 9.5-9.6 0-17.4-3.2-23.6-9.5-7-6.3-9.4-14-9.7-23.2v-33.3c.3-9.1 3.7-16.9 10-23.2 6.3-6.3 14.1-9.6 23.3-10 9.2.4 17 3.7 23.3 10z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/ILikeIneine" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tooltips", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.instant.prefetch", "navigation.tabs", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "header.autohide"], "search": "../../../assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.7389ff0e.min.js"></script>
+      
+    
+  </body>
+</html>

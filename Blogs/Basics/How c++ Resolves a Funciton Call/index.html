@@ -1,0 +1,1597 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../">
+      
+      
+        <link rel="next" href="../The%20Two%27s%20Componet/">
+      
+      
+      <link rel="icon" href="../../../Logos/pikachu.gif">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
+    
+    
+      
+        <title>How C++ Resolves A Function Call - 九份的咖啡店☕️</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.50c56a3b.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-c-resolves-a-function-call" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="九份的咖啡店☕️" class="md-header__button md-logo" aria-label="九份的咖啡店☕️" data-md-component="logo">
+      
+  <img src="../../../Logos/logo.gif" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            九份的咖啡店☕️
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How C++ Resolves A Function Call
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="cyan" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="lime" data-md-color-accent="deep-orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ILikeIneine/Retro_Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    github.io
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+    
+  
+  Blogs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Tutorials/clang-tidy%20tutorial/" class="md-tabs__link">
+          
+  
+    
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Pico-8/" class="md-tabs__link">
+          
+  
+    
+  
+  Pico-8
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Books/" class="md-tabs__link">
+          
+  
+    
+  
+  Reading
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="九份的咖啡店☕️" class="md-nav__button md-logo" aria-label="九份的咖啡店☕️" data-md-component="logo">
+      
+  <img src="../../../Logos/logo.gif" alt="logo">
+
+    </a>
+    九份的咖啡店☕️
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ILikeIneine/Retro_Site" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    github.io
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Blogs
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blogs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Back To Basics
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Back To Basics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    How C++ Resolves A Function Call
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    How C++ Resolves A Function Call
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#name-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Name Lookup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-handling-of-function-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Handling of Function Templates
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overload-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overload Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tiebreakers" class="md-nav__link">
+    <span class="md-ellipsis">
+      TieBreakers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#after-the-function-call-is-resolved" class="md-nav__link">
+    <span class="md-ellipsis">
+      After the Function Call Is Resolved
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      结束
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../The%20Two%27s%20Componet/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Two's Complement
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Value%20Catagorys/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Lvalues and Rvalues
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_3" id="__nav_1_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Chromium
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_3">
+            <span class="md-nav__icon md-icon"></span>
+            Chromium
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Chromium/Chromium%27s%20CHECK%20macro/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium 中的 CHECK 宏
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Chromium/Chromium%27s%20MessagePump/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium's MessagePump
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Chromium/Chromium%27s%20SequenceManager/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sequence Manager
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Chromium/Chromium%27s%20TaskPosting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium's Task Posting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_4" id="__nav_1_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Network
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_4">
+            <span class="md-nav__icon md-icon"></span>
+            Network
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Network/ip_datagram/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ip datagram
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Network/tcp/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TCP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5" id="__nav_1_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Others
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5">
+            <span class="md-nav__icon md-icon"></span>
+            Others
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_5_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_5_1" id="__nav_1_5_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Clang-Tidy
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_1_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            Clang-Tidy
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Others/A%20Way%20For%20Static%20Analyzing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ClangTidy代码静态检测
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Others/Clang-Tidy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nesessary Checks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Others/Fix%20ArkOS%20Not%20Booted%20%28Black%20Screen%29%20On%20RGB30/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fix ArkOS Not Booted (Black Screen) On RGB30
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Tutorials/clang-tidy%20tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Clang Tidy Tutorial
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Tutorials/Chromium%20Tutorial/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Chromium Compile Guide
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../Pico-8/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Pico-8
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Pico-8
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Pico-8/Games/whatout/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    What's Out
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../Books/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Reading
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Reading
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#name-lookup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Name Lookup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-handling-of-function-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Handling of Function Templates
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overload-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overload Resolution
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tiebreakers" class="md-nav__link">
+    <span class="md-ellipsis">
+      TieBreakers
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#after-the-function-call-is-resolved" class="md-nav__link">
+    <span class="md-ellipsis">
+      After the Function Call Is Resolved
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      结束
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+    <a href="https://github.com/ILikeIneine/Retro_Site/edit/master/docs/Blogs/Basics/How c++ Resolves a Funciton Call.md" title="Edit this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25Z"/></svg>
+    </a>
+  
+  
+    
+      
+    
+    <a href="https://github.com/ILikeIneine/Retro_Site/raw/master/docs/Blogs/Basics/How c++ Resolves a Funciton Call.md" title="View source of this page" class="md-content__button md-icon">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5Z"/></svg>
+    </a>
+  
+
+
+<h1 id="how-c-resolves-a-function-call">How C++ Resolves A Function Call<a class="headerlink" href="#how-c-resolves-a-function-call" title="Permanent link">&para;</a></h1>
+<p>Ref: <a href="https://preshing.com/20210315/how-cpp-resolves-a-function-call/">How C++ Resolves A Function Call</a></p>
+<p>这是编译器如何为一个给定<em>函数调用表达式</em>匹配正确的函数的过程：</p>
+<p><img alt="FunctionCalling_1" src="../asserts/svgs/FunctionCalling_1.svg" /></p>
+<p>这些步骤包含在C++标准中，每一家的C++编译器都必须得遵守这些标准。并且，对于函数调用表达式的评估的整个过程都在编译期。</p>
+<p>其中的一些东西都可能符合我们的直觉，但是某一些在第一眼看到还是比较让人难以理解。这其中涉及到了几个C++常谈的东西，比如ADL(Argument-dependent lookup)和SFINAE啥的。</p>
+<h2 id="name-lookup">Name Lookup<a class="headerlink" href="#name-lookup" title="Permanent link">&para;</a></h2>
+<p>从名称查找阶段开始，举个例子。如下一段代码，表达式<code>blast(ast, 100)</code>函数调用最终会调用哪一个函数？</p>
+<div class="highlight"><pre><span></span><code><span class="k">namespace</span><span class="w"> </span><span class="nn">galaxy</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">Asteroid</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">float</span><span class="w"> </span><span class="n">radius</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="p">;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="c1">// candidates 1</span>
+<span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">blast</span><span class="p">(</span><span class="n">Asteroid</span><span class="o">*</span><span class="w"> </span><span class="n">ast</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">force</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">Target</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">galaxy</span><span class="o">::</span><span class="n">Asteroid</span><span class="o">*</span><span class="w"> </span><span class="n">ast</span><span class="p">;</span>
+<span class="w">    </span><span class="n">Target</span><span class="p">(</span><span class="n">galaxy</span><span class="o">::</span><span class="n">Asteroid</span><span class="o">*</span><span class="w"> </span><span class="n">ast</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ast</span><span class="p">{</span><span class="n">ast</span><span class="p">}</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="k">operator</span><span class="w"> </span><span class="n">galaxy</span><span class="o">::</span><span class="n">Asteroid</span><span class="o">*</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">ast</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// candidates 2</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">blast</span><span class="p">(</span><span class="n">Target</span><span class="w"> </span><span class="n">target</span><span class="p">);</span>
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">blast</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">force</span><span class="p">);</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">play</span><span class="p">(</span><span class="n">galaxy</span><span class="o">::</span><span class="n">Asteroid</span><span class="o">*</span><span class="w"> </span><span class="n">ast</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">blast</span><span class="p">(</span><span class="n">ast</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>第一个过程是<strong>name lookup</strong>. 在这一步，编译器会向上查找所有具有相同标识(identity)的函数和函数模版.</p>
+<p><img alt="FunctionCalling_2" src="../asserts/svgs/FunctionCalling_2.svg" /></p>
+<p>如流程图所示，主要有三种名称查找，每一种都有对应的规则。</p>
+<ul>
+<li><strong>Member name lookup</strong> 发生在<code>.</code>或者<code>-&gt;</code>标识之后，比如在<code>foo-&gt;bar</code>。这种lookup通常用于定位类的成员。</li>
+<li><strong>Qualified name lookup</strong> 发生在当名称中携带了域标识符<code>::</code>，比如<code>std::sort</code>。这种名称查找是显示的。只会在<code>::</code>左边部分所标识的范围内查找右边的部分。</li>
+<li><strong>Unqualified name lookup</strong> 不属于上面范围。当编译器看到一个未限定的名称，比如<code>blast</code>。会根据上下文在不同的范围里查找名称。详细的<a href="https://en.cppreference.com/w/cpp/language/unqualified_lookup">规则</a>在这。</li>
+</ul>
+<p>在我们的例子中的是一个未限定名称查找。 编译器会找到很多符合条件的声明，我们称为<strong>candidates</strong>。在上面的例子中我们有三个候选:
+<img alt="FunctionCalling_3" src="../asserts/svgs/FunctionCalling_3.svg" /></p>
+<p>上面圈出的第一个候选代码值得格外关注，因为它展示了 C++ 的一个容易被忽视的特性：参数依赖查找(argument-dependent lookup)，简称为 ADL。下面是一个快速总结，以防你也遇到同样的问题。通常情况下，你不会想到这个函数会被调用，因为它是在 galaxy 命名空间内声明的，而调用来自 galaxy 命名空间之外。代码中也没有 <code>using namespace galaxy</code> 指令让这个函数可见。那么，为什么这个函数是候选函数呢？</p>
+<p>其原因是，当在函数调用中使用未限定的名称时（该名称不指向类成员），ADL 就会启动，并且名称查找会变得更加贪婪。具体来说，除了常规的查找方式外，编译器还会在<strong>参数类型的名称空间</strong>中查找候选函数，这就是 "依赖参数查找 "的由来。
+<img alt="FunctionCalling_4" src="../asserts/svgs/FunctionCalling_4.svg" /></p>
+<p>具体的 <a href="https://en.cppreference.com/w/cpp/language/adl">ADL规则</a> 比我在这里描述的要细致得多，但关键是 ADL 只适用于非限定名称。对于在单个作用域中查找的限定名称，ADL 没有作用。ADL 在重载 <code>+</code> 和 <code>==</code> 等内置运算符时也起作用，这让你在编写数学库时可以利用它。</p>
+<p>有趣的是，在某些情况下，成员名称查找可以找到未限定名称查找找不到的候选者。有关详情，请参阅 Eli Bendersky 发表的<a href="https://eli.thegreenplace.net/2012/02/06/dependent-name-lookup-for-c-templates">这篇文章</a>。</p>
+<h2 id="special-handling-of-function-templates">Special Handling of Function Templates<a class="headerlink" href="#special-handling-of-function-templates" title="Permanent link">&para;</a></h2>
+<p>通过名称查找找到的候选函数中，有些是函数，有些是函数模板。函数模板只有一个问题：我们无法调用函数模版。只能够调用函数。因此，在名称查找之后，编译器会浏览候选列表，并尝试将每个函数模板转化为合适的函数。
+<img alt="FunctionCalling_5" src="../asserts/svgs/FunctionCalling_5.svg" /></p>
+<p>在我们的示例中，第三个候选模板实际上就是函数模板：</p>
+<p><img alt="FunctionCalling_8" src="../asserts/svgs/FunctionCalling_8.svg" /></p>
+<p>这个函数模板只有一个模板参数 <code>T</code>，因此它需要一个模板参数。调用者 <code>blast(ast, 100)</code> 没有指定任何模板参数，因此为了将此函数模板转化为函数，编译器必须推导出 <code>T</code> 的类型。在这一步中，编译器会将调用者传递的函数参数类型（如下图左侧）与函数模板期望的函数参数类型（如下图右侧）进行比较。如果右侧引用了任何未指定的模板参数（如 T），编译器会尝试使用左侧的信息对其进行推导。</p>
+<p><img alt="FunctionCalling_6" src="../asserts/svgs/FunctionCalling_6.svg" /></p>
+<p>在本例中，编译器将 <code>T</code> 演绎为 <code>galaxy::Asteroid</code>，因为这样做可以使第一个函数参数 <code>T*</code> 与参数 <code>ast</code> 兼容。关于<a href="https://en.cppreference.com/w/cpp/language/template_argument_deduction">模板参数推导的规则</a>是一个很大的话题，但在像本例这样的简单例子中，它们通常会达到你所期望的效果。如果模板参数推导不起作用，换句话说，如果编译器无法以一种使函数参数与调用者参数<em>兼容</em>的方式推导出模板参数，那么函数模板就会从候选列表中删除。</p>
+<p>候选列表中的任何函数模板，只要能存活到这一步，都将进入下一步：模板参数替换。在这一步中，编译器会使用函数模板声明，并用相应的模板参数替换每个模板参数的每一次出现。在我们的例子中，模板参数 <code>T</code> 被替换为推导出的模板参数 <code>galaxy::Asteroid</code>。这一步成功后，我们终于得到了一个可以调用的真正函数的签名，而不仅仅是一个函数模板！</p>
+<p><img alt="FunctionCalling_7" src="../asserts/svgs/FunctionCalling_7.svg" /></p>
+<p>当然，在某些情况下模板参数替换可能会失败。假设同一个函数模板接受第三个参数，如下所示：</p>
+<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">blast</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">force</span><span class="p">,</span><span class="w"> </span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">::</span><span class="n">Units</span><span class="w"> </span><span class="n">mass</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="p">);</span>
+</code></pre></div>
+<p>如果是这种情况，编译器就会尝试用 <code>galaxy::Asteroid</code> 替换 <code>T::Units</code> 中的 <code>T</code>。由于 <code>galaxy::Asteroid</code> 实际上并没有名为 <code>Units</code> 的成员，因此产生的类型标识 <code>galaxy::Asteroid::Units</code> 将是错误的。模板参数替换将失败。</p>
+<p>当模板参数替换失败时，函数模板就会从候选列表中删除--在 C++ 历史上的某个时刻，人们意识到这是一个可以利用的特性！这一发现催生了一整套元编程技术，统称为 SFINAE（替换失败不是错误）。SFINAE 是一个复杂难懂的话题，我在这里只说两点。首先，它本质上是一种操纵函数调用解析过程的方法，使其选择你想要的候选结果。其次，随着时间的推移，程序员越来越多地使用现代 C++ 元编程技术（如约束和 constexpr if）来实现同样的目的，SFINAE 可能会逐渐失宠。</p>
+<h2 id="overload-resolution">Overload Resolution<a class="headerlink" href="#overload-resolution" title="Permanent link">&para;</a></h2>
+<p>重载决议</p>
+<p>在这一阶段，名称查找过程中发现的所有函数模板都已消失，我们只剩下一组整齐的候选函数。这也被称为重载集。下面是我们示例中更新后的候选函数列表：</p>
+<p><img alt="FuncionOverload_1" src="../asserts/svgs/FunctionOverload_1.svg" /></p>
+<p>接下来的两个步骤通过确定哪些候选函数是可行的（换句话说，哪些可以处理函数调用）来进一步缩小此列表的范围。</p>
+<p><img alt="FuncionOverload_2" src="../asserts/svgs/FunctionOverload_2.svg" /></p>
+<p>也许最明显的要求就是参数类型必须兼容；也就是说，一个可行的函数应该能够接受调用者的参数。如果调用者的参数类型与函数的参数类型不完全匹配，那么<em>至少</em>可以将每个参数<em>隐式</em>地转换为相应的参数类型。让我们看看示例中的每个候选函数，看看其参数是否兼容：</p>
+<p><img alt="FuncionOverload_3" src="../asserts/svgs/FunctionOverload_3.svg" /></p>
+<ul>
+<li><strong>Candidate1</strong></li>
+</ul>
+<p>调用者的第一个参数类型 <code>galaxy::Asteroid*</code> 完全匹配。调用者的第二个参数类型 <code>int</code> 可以隐式转换为第二个函数参数类型 <code>float</code>，因为 <code>int</code> 到 <code>float</code> 是一种<a href="https://learn.microsoft.com/en-us/cpp/cpp/standard-conversions?view=msvc-170">标准转换</a>。因此，候选1 的参数是兼容的。</p>
+<ul>
+<li><strong>Candidate2</strong></li>
+</ul>
+<p>调用者的第一个参数类型 <code>galaxy::Asteroid*</code> 可以隐式转换为第一个函数参数类型 <code>Target</code>，因为 <code>Target</code> 有一个转换构造函数，可以接受 <code>galaxy::Asteroid*</code> 类型的参数。（因为 <code>Target</code> 有一个用户定义的转换函数，可以隐式转换为 <code>galaxy::Asteroid*</code> 类型）。然而，调用者传递了两个参数，而候选 2 只接受一个参数。因此，候选 2 不可行。</p>
+<p><img alt="FuncionOverload_4" src="../asserts/svgs/FunctionOverload_4.svg" /></p>
+<ul>
+<li><strong>Candidate2</strong></li>
+</ul>
+<p>候选 3 的参数类型与候选 1 相同，因此也是兼容的。</p>
+<p>就像这个过程中的其他事情一样，控制<a href="https://en.cppreference.com/w/cpp/language/implicit_conversion">隐式转换</a>的规则本身就是一个完整的主题。最值得注意的规则是，通过将构造函数和转换操作符标记为<em>显式(explicit)</em>，可以避免让它们参与隐式转换。</p>
+<p>在使用调用者的参数过滤掉不兼容的候选函数后，编译器会继续检查每个函数的约束（如果有的话）是否满足。约束是 C++20 的一项新功能。通过它，您可以使用自定义逻辑来排除候选函数（来自类模板或函数模板），而不必求助于 SFINAE。它们还能提供更好的错误信息。我们的示例没有使用约束，因此可以跳过这一步。（从技术上讲，标准规定在推导模板参数时也要提前检查约束，但我跳过了这一细节）。在这两个地方进行检查有助于确保显示最佳的错误信息）。</p>
+<h2 id="tiebreakers">TieBreakers<a class="headerlink" href="#tiebreakers" title="Permanent link">&para;</a></h2>
+<p>重裁决议的最后时刻</p>
+<p>在这个例子中，我们只剩下两个可行的函数。其中任何一个都可以很好地处理原始函数调用：</p>
+<p><img alt="FuncionOverload_5" src="../asserts/svgs/FunctionOverload_5.svg" /></p>
+<p>事实上，如果上述任何一个函数是唯一可行的函数，那么它就是处理函数调用的函数。但由于存在两个函数，编译器现在必须做它在有多个可行函数时总是要做的事情：它必须确定哪一个是最佳可行函数。要成为最佳可行函数，其中一个函数必须 "战胜"(更加匹配于) 所有其他可行函数，这是由一系列规则决定的。</p>
+<p><img alt="FuncionOverload_6" src="../asserts/svgs/FunctionOverload_6.svg" /></p>
+<p>让我们来看看前三条决胜规则:</p>
+<ol>
+<li>
+<p>Better-matching parameters wins</p>
+<p>C++ 最重视调用者的参数类型与函数参数类型的匹配程度。粗略地说，C++ 更喜欢那些需要对给定参数进行较少隐式转换的函数。当两个函数都需要转换时，某些转换被认为比其他转换 "更好"。例如，<code>std::vector</code> 的 <a href="https://en.cppreference.com/w/cpp/container/vector/operator_at"><code>operator[]</code></a> 就是根据这一规则决定调用 <code>const</code> 或非 <code>const</code> 版本的。</p>
+<p>在我们下面的示例中，两个可行的函数具有相同的参数类型，因此没有一个比另一个更好。这是一个平局。因此，我们进入第二个赛点。</p>
+</li>
+<li>
+<p>Non-template function wins</p>
+<p>如果第一名的胜负没有分出胜负，那么 C++ 会优先调用非模板函数，而不是模板函数。在我们的例子中，这就是决定胜负的规则：可行函数 1 是一个非模板函数，而可行函数 2 来自模板。因此，我们的<strong>最佳</strong>可行函数是来自星系命名空间的函数：</p>
+<p><img alt="FuncionOverload_7" src="../asserts/svgs/FunctionOverload_7.svg" /></p>
+<p>值得重申的是，前面两个条件是按照我描述的方式排序的。换句话说，如果有一个可行的函数，其参数与给定参数的匹配程度比其他所有可行的函数都要好，那么<em>即使它是一个模板函数</em>，也会优先选择。</p>
+</li>
+<li>
+<p>More specialized template wins</p>
+<p>在我们的例子中，我们已经找到了最佳可行函数，但如果没有找到，我们就会进入第三关。在这一决胜局中，C++ 更倾向于调用"更特化的"的模板函数。例如，请看下面两个函数模板：</p>
+<div class="highlight"><pre><span></span><code><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">blast</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">force</span><span class="p">);</span>
+<span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">typename</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">blast</span><span class="p">(</span><span class="n">T</span><span class="o">*</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="kt">float</span><span class="w"> </span><span class="n">force</span><span class="p">);</span>
+</code></pre></div>
+<p>对这两个函数模板进行模板参数推导时，第一个函数模板接受任何类型作为第一个参数，但第二个函数模板只接受指针类型。因此，可以说第二个函数模板更加专业化(more specialized)。如果这两个函数模板是我们调用 <code>blast(ast, 100)</code> 时进行名称查找的唯一结果，并且这两个结果都是可行的函数，那么当前的规则将导致第二个函数模板被选中，而不是第一个。决定哪个函数模板比另一个函数模板<a href="https://en.cppreference.com/w/cpp/language/function_template#Function_template_overloading">更特化的规则</a>是另一个大课题。</p>
+<p>尽管第二个函数模板被认为更专业化，但重要的是要明白，它实际上并不是第一个函数模板的偏特化。恰恰相反，它们是两个完全独立的函数模板，只是碰巧同名而已。换句话说，它们是重载的。C++ 不允许对函数模板进行部分特化。</p>
+</li>
+</ol>
+<p>除了这里列出的几种情况外，还有<a href="https://en.cppreference.com/w/cpp/language/overload_resolution#Best_viable_function">其他几种</a>打破平衡的情况。例如，如果 <a href="https://devblogs.microsoft.com/cppblog/simplify-your-code-with-rocket-science-c20s-spaceship-operator/">&lt;=&gt; 操作符</a> 和重载<em>比较操作符</em>（如 <code>&gt;</code>）都可行，C++ 会优先选择比较操作符。如果候选的是用户定义的转换函数，还有其他规则比我列出的规则更优先。尽管如此，我相信我所展示的三个决定因素是最重要的。</p>
+<p>毋庸置疑，如果编译器检查了每一个条件，却没有找到一个明确的声明，那么编译就会失败。</p>
+<h2 id="after-the-function-call-is-resolved">After the Function Call Is Resolved<a class="headerlink" href="#after-the-function-call-is-resolved" title="Permanent link">&para;</a></h2>
+<p>旅程到此结束。编译器现在已经知道 <code>blast(ast, 100)</code> 表达式应该调用哪个函数了。不过，在许多情况下，编译器在解析函数调用后还有更多工作要做：</p>
+<ul>
+<li>如果被调用的函数是一个类成员，编译器必须检查该成员的访问规范，以确定调用者是否可以访问该成员。</li>
+<li>如果被调用的函数是模板函数，编译器会尝试实例化该模板函数，前提是其定义可见。</li>
+<li>如果被调用的函数是虚拟函数，编译器会生成特殊的机器指令，以便在运行时调用正确的覆盖。</li>
+</ul>
+<p>这篇文章并不包含任何新信息。它基本上是对 cppreference.com 已经描述过的算法的浓缩解释，而 <a href="https://en.cppreference.com/w/cpp/language">cppreference</a> 又是 <a href="https://eel.is/c++draft/">C++标准</a> 的浓缩版本。不过，这篇文章的目的是传达主要步骤，而不涉及细节。让我们回顾一下，究竟有多少细节被省略了。事实上，这还真不简单：</p>
+<ul>
+<li><a href="https://en.cppreference.com/w/cpp/language/unqualified_lookup">非限定名称查找</a>有一整套规则。</li>
+<li><a href="https://en.wikipedia.org/wiki/Argument-dependent_name_lookup">参数依赖查找</a>有一套规则。</li>
+<li><a href="https://eel.is/c++draft/class.member.lookup">成员名称查找</a>也有自己的规则。</li>
+<li><a href="https://en.cppreference.com/w/cpp/language/template_argument_deduction">模板参数推导</a>有一套规则。</li>
+<li><a href="https://en.wikipedia.org/wiki/Substitution_failure_is_not_an_error">SFINAE</a>规则。</li>
+<li><a href="https://en.cppreference.com/w/cpp/language/implicit_conversion">隐式转换</a>有一套规则。</li>
+<li>C++20 带来的 <code>concept</code> and <code>constraint</code></li>
+<li>有一套规则可以确定哪些隐式转换比其他转换<a href="https://en.cppreference.com/w/cpp/language/overload_resolution#Ranking_of_implicit_conversion_sequences">更好</a></li>
+<li>一套规则可以确定哪个函数模板比另一个函数模板<a href="https://en.cppreference.com/w/cpp/language/function_template#Function_template_overloading">更专业</a>。</li>
+</ul>
+<h2 id="_1">结束<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      All Wrongs Served.
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://space.bilibili.com/11770315" target="_blank" rel="noopener" title="Bilibili" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M488.6 104.1c16.7 18.1 24.4 39.7 23.3 65.7v202.4c-.4 26.4-9.2 48.1-26.5 65.1-17.2 17-39.1 25.9-65.5 26.7H92.02c-26.45-.8-48.21-9.8-65.28-27.2C9.682 419.4.767 396.5 0 368.2V169.8c.767-26 9.682-47.6 26.74-65.7C43.81 87.75 65.57 78.77 92.02 78h29.38L96.05 52.19c-5.75-5.73-8.63-13-8.63-21.79 0-8.8 2.88-16.06 8.63-21.797C101.8 2.868 109.1 0 117.9 0s16.1 2.868 21.9 8.603L213.1 78h88l74.5-69.397C381.7 2.868 389.2 0 398 0c8.8 0 16.1 2.868 21.9 8.603 5.7 5.737 8.6 12.997 8.6 21.797 0 8.79-2.9 16.06-8.6 21.79L394.6 78h29.3c26.4.77 48 9.75 64.7 26.1zm-38.8 69.7c-.4-9.6-3.7-17.4-10.7-23.5-5.2-6.1-14-9.4-22.7-9.8H96.05c-9.59.4-17.45 3.7-23.58 9.8-6.14 6.1-9.4 13.9-9.78 23.5v194.4c0 9.2 3.26 17 9.78 23.5s14.38 9.8 23.58 9.8H416.4c9.2 0 17-3.3 23.3-9.8 6.3-6.5 9.7-14.3 10.1-23.5V173.8zm-264.3 42.7c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2-6.2 6.3-14 9.5-23.6 9.5-9.6 0-17.5-3.2-23.6-9.5-6.1-6.3-9.4-14-9.8-23.2v-33.3c.4-9.1 3.8-16.9 10.1-23.2 6.3-6.3 13.2-9.6 23.3-10 9.2.4 17 3.7 23.3 10zm191.5 0c6.3 6.3 9.7 14.1 10.1 23.2V273c-.4 9.2-3.7 16.9-9.8 23.2-6.1 6.3-14 9.5-23.6 9.5-9.6 0-17.4-3.2-23.6-9.5-7-6.3-9.4-14-9.7-23.2v-33.3c.3-9.1 3.7-16.9 10-23.2 6.3-6.3 14.1-9.6 23.3-10 9.2.4 17 3.7 23.3 10z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/ILikeIneine" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.tooltips", "navigation.top", "navigation.instant", "navigation.instant.progress", "navigation.instant.prefetch", "navigation.tabs", "navigation.indexes", "search.suggest", "search.highlight", "content.code.copy", "content.action.edit", "content.action.view", "header.autohide"], "search": "../../../assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.7389ff0e.min.js"></script>
+      
+    
+  </body>
+</html>

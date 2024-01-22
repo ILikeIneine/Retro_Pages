@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "cascadia mono";
+  src: url();
+}
+
+/* Customize themes */
+[data-md-color-scheme="default"] {
+  --md-footer-bg-color:         #ff77a9d8;
+  --md-footer-fg-color:         #FF004D;
+  --md-footer-bg-color--dark:   #00000000;
+  --md-default-bg-color:        #c5ecca;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-footer-bg-color:         #009485;
+  --md-footer-fg-color:         #008751;
+  --md-footer-bg-color--dark:   #00000000;
+}
+
+/* Default Settings */
+:root {
+}
