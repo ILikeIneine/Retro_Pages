@@ -18,7 +18,9 @@ nav:
       - Clang-Tidy:
         - Blogs/Others/A Way For Static Analyzing.md
         - Blogs/Others/Clang-Tidy.md
-      - Blogs/Others/Fix ArkOS Not Booted (Black Screen) On RGB30.md
+      - Fix ArkOS Not Booted (Black Screen) On RGB30:
+      comment: true
+        - Blogs/Others/Fix ArkOS Not Booted (Black Screen) On RGB30.md
   - Tutorials:
     - Tutorials/clang-tidy tutorial.md
     - Tutorials/Chromium Tutorial.md
@@ -30,6 +32,7 @@ nav:
 theme:
   logo: Logos/logo.gif
   name: material
+  custom_dir: overrides
   favicon: Logos/pikachu.gif
   icon:
     edit: material/pencil
